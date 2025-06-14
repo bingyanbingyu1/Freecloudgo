@@ -39,13 +39,13 @@ jobs:
 
       - name: Send Failure Notification
         if: ${{ failure() }}
-        uses: cinotify/github-action@main
+        uses: corysimmons/resend-email-action@v1
         with:
-          to: ${{ secrets.FC_EMAIL }} # 收件邮箱
+          api-key: ${{ secrets.RESEND_API_KEY }}
+          from: Resend GitHub CI <notifications@resend.dev>
+          to: ${{ secrets.FC_EMAIL }}
           subject: "!!! Freecloud Renew Task Failed - $(date +'%Y-%m-%d')"
-          body: "<em>Freecloud renew task FAILED!!!</br>See the attachment </em>"
-          type: "text/html"
-          attachment: "result.txt"
+          text: "<em>Freecloud renew task FAILED!!!</br>See the attachment </em>"
 
       # 6. 发送成功邮件通知
 
@@ -53,11 +53,11 @@ jobs:
         if: ${{ success() }}
         uses: cinotify/github-action@main
         with:
-          to: ${{ secrets.FC_EMAIL }} # 收件邮箱
+          api-key: ${{ secrets.RESEND_API_KEY }}
+          from: Resend GitHub CI <notifications@resend.dev>
+          to: ${{ secrets.FC_EMAIL }}
           subject: "Freecloud Renew Task Result - $(date +'%Y-%m-%d')"
-          body: "<em>Freecloud renew task result notification from GitHub Actions.</em>"
-          type: "text/html"
-          attachment: "result.txt"
+          text: "<em>Freecloud renew task result notification from GitHub Actions.</em>"
 
   workflow-keepalive:
     if: github.event_name == 'schedule'
