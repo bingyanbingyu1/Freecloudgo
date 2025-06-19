@@ -51,7 +51,7 @@ jobs:
 
       - name: Send Success Notification
         if: ${{ success() }}
-        uses: cinotify/github-action@main
+        uses: corysimmons/resend-email-action@v1
         with:
           api-key: ${{ secrets.RESEND_API_KEY }}
           from: Resend GitHub CI <notifications@resend.dev>
