@@ -22,6 +22,6 @@ jobs:
 
       - name: Run renewal script
         env:
-          FC_PROFILE_JSON: '[{"username": "${{ secrets.FC_USERNAME }}", "password": "${{ secrets.FC_PASSWORD }}", "machines": [${{ secrets.FC_MACHINE_IDS }}]}]'
+          FC_PROFILE_JSON: '{"username": "${{ secrets.FC_USERNAME }}", "password": "${{ secrets.FC_PASSWORD }}", "machines": [${{ secrets.FC_MACHINE_IDS }}]}'
         run: |
           ./renew -c "$FC_PROFILE_JSON"
