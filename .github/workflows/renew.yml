@@ -1,0 +1,27 @@
+name: Auto Renew FreeCloud
+
+on:
+  schedule:
+    - cron: '0 0 * * *' # Runs at midnight UTC every day
+  workflow_dispatch: # Allows manual triggering
+
+jobs:
+  renew:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: '1.24'
+
+      - name: Build application
+        run: go build -o renew freecloud.go
+
+      - name: Run renewal script
+        env:
+          FC_PROFILE_JSON: '[{"username": "${{ secrets.FC_USERNAME }}", "password": "${{ secrets.FC_PASSWORD }}", "machines": [${{ secrets.FC_MACHINE_IDS }}]}]'
+        run: |
+          ./renew -c "$FC_PROFILE_JSON"
