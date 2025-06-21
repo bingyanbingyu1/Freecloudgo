@@ -150,6 +150,7 @@ func login(client *http.Client, username, password string) bool {
 	bodyStr := string(body)
 	if !strings.Contains(bodyStr, "退出登录") && !strings.Contains(bodyStr, "member/index") {
 		log.Printf("❌ 登录失败，请检查用户名或密码是否正确。")
+		log.Printf("📄 以下是服务器返回的原始响应内容，以帮助您分析原因：\n%s", bodyStr)
 		return false
 	}
 
