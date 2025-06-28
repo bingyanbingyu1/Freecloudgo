@@ -12,30 +12,22 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # 2. 设置Go环境
+      # 2. 安装python依赖
 
-      - name: Set up Go
-        uses: actions/setup-go@v5
-        with:
-          go-version: "1.24.4" # 指定Go版本
-
-      # 3. 编译Go程序
-
-      - name: Build
+      - name: Set up cloudscraper
         run: |
-          go mod tidy
-          go build -o renew . # 编译生成可执行文件renew
+          apt install python3-cloudscraper
 
-      # 4. 执行renew命令
+      # 3. 执行renew命令
 
       - name: Run renew command
         env:
           FC_PROFILE: ${{ secrets.FC_PROFILE }} # 注入密钥
         run: |
-          ./renew -c "$FC_PROFILE" > result.txt  # 结果输出到文件
+          python renew.py -c "$FC_PROFILE" > result.txt  # 结果输出到文件
         shell: bash
 
-      # 5. 发送失败邮件通知
+      # 4. 发送失败邮件通知
 
       - name: Send Failure Notification
         if: ${{ failure() }}
@@ -45,19 +37,19 @@ jobs:
           from: Resend GitHub CI <notifications@resend.dev>
           to: ${{ secrets.FC_EMAIL }}
           subject: "!!! Freecloud Renew Task Failed - $(date +'%Y-%m-%d')"
-          text: "<em>Freecloud renew task FAILED!!!</br>See the attachment </em>"
+          text: "Freecloud renew task FAILED!!! See the attachment"
 
-      # 6. 发送成功邮件通知
+      # 5. 发送成功邮件通知
 
       - name: Send Success Notification
         if: ${{ success() }}
-        uses: cinotify/github-action@main
+        uses: corysimmons/resend-email-action@v1
         with:
           api-key: ${{ secrets.RESEND_API_KEY }}
           from: Resend GitHub CI <notifications@resend.dev>
           to: ${{ secrets.FC_EMAIL }}
           subject: "Freecloud Renew Task Result - $(date +'%Y-%m-%d')"
-          text: "<em>Freecloud renew task result notification from GitHub Actions.</em>"
+          text: "Freecloud renew task result notification from GitHub Actions."
 
   workflow-keepalive:
     if: github.event_name == 'schedule'
