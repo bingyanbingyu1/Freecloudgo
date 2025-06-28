@@ -17,7 +17,7 @@ jobs:
 
       - name: Set up cloudscraper
         run: |
-          apt install python3-cloudscraper
+          sudo apt install python3-cloudscraper
 
       # 3. 执行renew命令
 
